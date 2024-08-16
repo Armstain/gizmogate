@@ -8,6 +8,7 @@ const HomePage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [filters, setFilters] = useState({});
+  const [searchTerm, setSearchTerm] = useState('');
 
   const fetchProducts = async (filters = {}) => {
     try {
@@ -16,6 +17,7 @@ const HomePage = () => {
           ...filters,
           page: currentPage,
           limit: 10,
+          search: searchTerm,
         },
       });
 
@@ -28,7 +30,7 @@ const HomePage = () => {
 
   useEffect(() => {
     fetchProducts(filters);
-  }, [currentPage, filters]);
+  }, [currentPage, filters, searchTerm]);
 
   const handleFilterChange = (newFilters) => {
     setCurrentPage(1); // Reset to first page when filters change
@@ -39,10 +41,24 @@ const HomePage = () => {
     setCurrentPage(page);
   };
 
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+    setCurrentPage(1); // Reset to first page when search term changes
+  };
+
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Product List</h1>
       <CategoryFilter onFilterChange={handleFilterChange} />
+      <div className="mb-4">
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={handleSearchChange}
+          placeholder="Search for products..."
+          className="border px-4 py-2 rounded"
+        />
+      </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
         {filteredProducts.map((product) => (
           <div key={product.id} className="border rounded-lg p-4 shadow-md">

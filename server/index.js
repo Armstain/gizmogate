@@ -53,42 +53,51 @@ async function run() {
 
 
     // get all products
-    app.get('/products', async (req, res) => {
-      const limit = parseInt(req.query.limit) || 10;
-      const page = parseInt(req.query.page) || 1;
-      const skip = (page - 1) * limit;
-    
-      const query = {};
-    
-      if (req.query.category) {
-        query.category = req.query.category;
-      }
-    
-      if (req.query.brand) {
-        query.brand = req.query.brand;
-      }
-    
-      if (req.query.minPrice && req.query.maxPrice) {
-        query.price = {
-          $gte: parseFloat(req.query.minPrice),
-          $lte: parseFloat(req.query.maxPrice),
-        };
-      }
-    
-      try {
-        const products = await productsCollection.find(query).skip(skip).limit(limit).toArray();
-        const totalProducts = await productsCollection.countDocuments(query);
-        const totalPages = Math.ceil(totalProducts / limit);
-    
-        res.send({
-          products,
-          totalPages,
-        });
-      } catch (err) {
-        console.error(err);
-        res.status(500).send({ message: 'Error fetching products' });
-      }
+    // server.js (or app.js)
+
+app.get('/products', async (req, res) => {
+  const limit = parseInt(req.query.limit) || 10;
+  const page = parseInt(req.query.page) || 1;
+  const skip = (page - 1) * limit;
+
+  const query = {};
+
+  if (req.query.category) {
+    query.category = req.query.category;
+  }
+
+  if (req.query.brand) {
+    query.brand = req.query.brand;
+  }
+
+  if (req.query.minPrice && req.query.maxPrice) {
+    query.price = {
+      $gte: parseFloat(req.query.minPrice),
+      $lte: parseFloat(req.query.maxPrice),
+    };
+  }
+
+  if (req.query.search) {
+    query.name = {
+      $regex: new RegExp(req.query.search, 'i'), // Case-insensitive search
+    };
+  }
+
+  try {
+    const products = await productsCollection.find(query).skip(skip).limit(limit).toArray();
+    const totalProducts = await productsCollection.countDocuments(query);
+    const totalPages = Math.ceil(totalProducts / limit);
+
+    res.send({
+      products,
+      totalPages,
     });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ message: 'Error fetching products' });
+  }
+});
+
     
     
     
