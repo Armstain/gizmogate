@@ -1,32 +1,35 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
-import CategoryFilter from '../components/CategoryFilter';
-import Pagination from '../components/Pagination';
+import { useState, useEffect } from "react";
+import axios from "axios";
+import CategoryFilter from "../components/CategoryFilter";
+import Pagination from "../components/Pagination";
 
 const HomePage = () => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [filters, setFilters] = useState({});
-  const [searchTerm, setSearchTerm] = useState('');
-  const [sortBy, setSortBy] = useState('date_added'); // Default sort by date added
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortBy, setSortBy] = useState("date_added"); // Default sort by date added
 
   const fetchProducts = async (filters = {}) => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_API_URL}/products`, {
-        params: {
-          ...filters,
-          page: currentPage,
-          limit: 8,
-          search: searchTerm,
-          sortBy: sortBy,
-        },
-      });
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/products`,
+        {
+          params: {
+            ...filters,
+            page: currentPage,
+            limit: 8,
+            search: searchTerm,
+            sortBy: sortBy,
+          },
+        }
+      );
 
       setFilteredProducts(response.data.products);
       setTotalPages(response.data.totalPages);
     } catch (error) {
-      console.error('Error fetching products:', error);
+      console.error("Error fetching products:", error);
     }
   };
 
@@ -57,7 +60,7 @@ const HomePage = () => {
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Product List</h1>
       <CategoryFilter onFilterChange={handleFilterChange} />
-      <div className="mb-4 flex items-center space-x-4">
+      <div className="my-4 flex items-center justify-center space-x-4 ">
         <input
           type="text"
           value={searchTerm}
@@ -75,19 +78,37 @@ const HomePage = () => {
           <option value="price_desc">Sort by Price (High to Low)</option>
         </select>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 mt-4">
         {filteredProducts.map((product) => (
-          <div key={product.id} className="border rounded-lg p-4 shadow-md">
-            <img
-              src={product.imageUrl}
-              alt={product.name}
-              className="w-full h-48 object-cover mb-2"
-            />
-            <h2 className="text-lg font-semibold mb-1">{product.name}</h2>
-            <p className="text-gray-700 mb-2">${product.price}</p>
+          <div key={product.id} className="card bg-base-100 w-96 shadow-xl">
+            <figure>
+              <img
+                src={product.imageUrl}
+                alt={product.name}
+                className="w-full h-48 object-cover"
+              />
+            </figure>
+            <div className="card-body">
+              <h2 className="card-title">{product.name}</h2>
+              <p className="text-gray-700 mb-2">{product.description}</p>
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-gray-500">{product.brand}</span>
+                <span className="text-yellow-500">
+                  {"⭐".repeat(product.rating)}
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-700">${product.price}</span>
+                <span className="text-gray-500 text-sm">
+                  {new Date(product.dateAdded).toLocaleDateString()}
+                </span>
+              </div>
+              <div className="card-actions justify-end"></div>
+            </div>
           </div>
         ))}
       </div>
+
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}

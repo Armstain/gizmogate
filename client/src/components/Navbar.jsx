@@ -18,17 +18,7 @@ const Navbar = () => {
   const Links = (
     <>
       <li><a>Home</a></li>
-      <li>
-        <details>
-          <summary>Categories</summary>
-          <ul className="p-2">
-            <li><a>Category 1</a></li>
-            <li><a>Category 2</a></li>
-            <li><a>Category 3</a></li>
-          </ul>
-        </details>
-      </li>
-      <li><a>Brand</a></li>
+      
       <li><a>Contact</a></li>
     </>
   );
@@ -57,12 +47,12 @@ const Navbar = () => {
             {Links}
           </ul>
         </div>
-        <a className="btn btn-ghost text-xl">TechTrack</a>
+        <a className="btn btn-ghost text-xl">Gizmogate</a>
       </div>
       <div className="navbar-center hidden lg:flex">
-        <div className="form-control">
+        {/* <div className="form-control">
           <input type="text" placeholder="Search" className="input input-bordered w-24 md:w-auto" />
-        </div>
+        </div> */}
         <ul className="menu menu-horizontal px-1">
           {Links}
         </ul>

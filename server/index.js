@@ -94,10 +94,10 @@ app.get('/products', async (req, res) => {
         sort.price = -1;
         break;
       case 'date_added':
-        sort.dateAdded = -1; // Newest first
+        sort.dateAdded = -1; 
         break;
       default:
-        sort.dateAdded = -1; // Default sort by dateAdded (newest first)
+        sort.dateAdded = -1; 
     }
   }
 

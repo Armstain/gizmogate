@@ -53,55 +53,70 @@ const CategoryFilter = ({ onFilterChange }) => {
   }, [selectedCategory, selectedBrand, minPrice, maxPrice]);
 
   return (
-    <div className="filter-container">
-      <div className="filter">
-        <label>Category:</label>
-        <select
-          value={selectedCategory}
-          onChange={(e) => setSelectedCategory(e.target.value)}
-        >
-          <option value="">All Categories</option>
-          {categories.map((category) => (
-            <option key={category} value={category}>
-              {category}
-            </option>
-          ))}
-        </select>
-      </div>
+    <div className="bg-gray-100 p-4 rounded-lg shadow-md">
+  <h2 className="text-xl font-semibold mb-4">Filter Products</h2>
 
-      <div className="filter">
-        <label>Brand:</label>
-        <select
-          value={selectedBrand}
-          onChange={(e) => setSelectedBrand(e.target.value)}
-        >
-          <option value="">All Brands</option>
-          {brands.map((brand) => (
-            <option key={brand} value={brand}>
-              {brand}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div className="filter">
-        <label>Min Price:</label>
-        <input
-          type="number"
-          value={minPrice}
-          onChange={(e) => setMinPrice(e.target.value)}
-        />
-      </div>
-
-      <div className="filter">
-        <label>Max Price:</label>
-        <input
-          type="number"
-          value={maxPrice}
-          onChange={(e) => setMaxPrice(e.target.value)}
-        />
-      </div>
+  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+    {/* Category Filter */}
+    <div className="flex flex-col">
+      <label className="font-medium mb-2">Category:</label>
+      <select
+        value={selectedCategory}
+        onChange={(e) => setSelectedCategory(e.target.value)}
+        className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+      >
+        <option value="">All Categories</option>
+        {categories.map((category) => (
+          <option key={category} value={category}>
+            {category}
+          </option>
+        ))}
+      </select>
     </div>
+
+    {/* Brand Filter */}
+    <div className="flex flex-col">
+      <label className="font-medium mb-2">Brand:</label>
+      <select
+        value={selectedBrand}
+        onChange={(e) => setSelectedBrand(e.target.value)}
+        className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+      >
+        <option value="">All Brands</option>
+        {brands.map((brand) => (
+          <option key={brand} value={brand}>
+            {brand}
+          </option>
+        ))}
+      </select>
+    </div>
+
+    {/* Min Price Filter */}
+    <div className="flex flex-col">
+      <label className="font-medium mb-2">Min Price:</label>
+      <input
+        type="number"
+        value={minPrice}
+        onChange={(e) => setMinPrice(e.target.value)}
+        className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        placeholder="0"
+      />
+    </div>
+
+    {/* Max Price Filter */}
+    <div className="flex flex-col">
+      <label className="font-medium mb-2">Max Price:</label>
+      <input
+        type="number"
+        value={maxPrice}
+        onChange={(e) => setMaxPrice(e.target.value)}
+        className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        placeholder="0"
+      />
+    </div>
+  </div>
+</div>
+
   );
 };
 
