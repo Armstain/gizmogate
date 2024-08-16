@@ -9,6 +9,7 @@ const HomePage = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [filters, setFilters] = useState({});
   const [searchTerm, setSearchTerm] = useState('');
+  const [sortBy, setSortBy] = useState('date_added'); // Default sort by date added
 
   const fetchProducts = async (filters = {}) => {
     try {
@@ -16,8 +17,9 @@ const HomePage = () => {
         params: {
           ...filters,
           page: currentPage,
-          limit: 10,
+          limit: 8,
           search: searchTerm,
+          sortBy: sortBy,
         },
       });
 
@@ -30,7 +32,7 @@ const HomePage = () => {
 
   useEffect(() => {
     fetchProducts(filters);
-  }, [currentPage, filters, searchTerm]);
+  }, [currentPage, filters, searchTerm, sortBy]);
 
   const handleFilterChange = (newFilters) => {
     setCurrentPage(1); // Reset to first page when filters change
@@ -46,11 +48,16 @@ const HomePage = () => {
     setCurrentPage(1); // Reset to first page when search term changes
   };
 
+  const handleSortChange = (e) => {
+    setSortBy(e.target.value);
+    setCurrentPage(1); // Reset to first page when sorting option changes
+  };
+
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Product List</h1>
       <CategoryFilter onFilterChange={handleFilterChange} />
-      <div className="mb-4">
+      <div className="mb-4 flex items-center space-x-4">
         <input
           type="text"
           value={searchTerm}
@@ -58,6 +65,15 @@ const HomePage = () => {
           placeholder="Search for products..."
           className="border px-4 py-2 rounded"
         />
+        <select
+          value={sortBy}
+          onChange={handleSortChange}
+          className="border px-4 py-2 rounded"
+        >
+          <option value="date_added">Sort by Date Added (Newest First)</option>
+          <option value="price_asc">Sort by Price (Low to High)</option>
+          <option value="price_desc">Sort by Price (High to Low)</option>
+        </select>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
         {filteredProducts.map((product) => (

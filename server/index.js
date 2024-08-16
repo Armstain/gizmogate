@@ -53,7 +53,8 @@ async function run() {
 
 
     // get all products
-    // server.js (or app.js)
+
+
 
 app.get('/products', async (req, res) => {
   const limit = parseInt(req.query.limit) || 10;
@@ -79,12 +80,29 @@ app.get('/products', async (req, res) => {
 
   if (req.query.search) {
     query.name = {
-      $regex: new RegExp(req.query.search, 'i'), // Case-insensitive search
+      $regex: new RegExp(req.query.search, 'i'),
     };
   }
 
-  try {
-    const products = await productsCollection.find(query).skip(skip).limit(limit).toArray();
+  let sort = {};
+  if (req.query.sortBy) {
+    switch (req.query.sortBy) {
+      case 'price_asc':
+        sort.price = 1;
+        break;
+      case 'price_desc':
+        sort.price = -1;
+        break;
+      case 'date_added':
+        sort.dateAdded = -1; // Newest first
+        break;
+      default:
+        sort.dateAdded = -1; // Default sort by dateAdded (newest first)
+    }
+  }
+
+ try {
+    const products = await productsCollection.find(query).sort(sort).skip(skip).limit(limit).toArray();
     const totalProducts = await productsCollection.countDocuments(query);
     const totalPages = Math.ceil(totalProducts / limit);
 
@@ -99,6 +117,10 @@ app.get('/products', async (req, res) => {
 });
 
     
+
+
+
+
     
     
       
