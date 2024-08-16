@@ -1,124 +1,50 @@
-// src/components/HomePage.jsx
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useSearchParams } from 'react-router-dom';
+import CategoryFilter from '../components/CategoryFilter';
+import Pagination from '../components/Pagination';
 
 const HomePage = () => {
-  const [products, setProducts] = useState([]);
-  const [totalProducts, setTotalProducts] = useState(0);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [searchParams, setSearchParams] = useSearchParams();
-  
-  const [brand, setBrand] = useState('');
-  const [category, setCategory] = useState('');
-  const [minPrice, setMinPrice] = useState('');
-  const [maxPrice, setMaxPrice] = useState('');
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [filters, setFilters] = useState({});
 
-  const page = parseInt(searchParams.get('page') || '1', 10);
-  const limit = 10;
+  const fetchProducts = async (filters = {}) => {
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/products`, {
+        params: {
+          ...filters,
+          page: currentPage,
+          limit: 10,
+        },
+      });
+
+      setFilteredProducts(response.data.products);
+      setTotalPages(response.data.totalPages);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    }
+  };
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      setLoading(true);
-      try {
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/products`, {
-          params: {
-            limit,
-            offset: (page - 1) * limit,
-            brand: brand || undefined,
-            category: category || undefined,
-            minPrice: minPrice || undefined,
-            maxPrice: maxPrice || undefined,
-          },
-        });
-        setProducts(response.data.products);
-        setTotalProducts(response.data.totalProducts);
-      } catch (err) {
-        setError('Failed to fetch products');
-      } finally {
-        setLoading(false);
-      }
-    };
+    fetchProducts(filters);
+  }, [currentPage, filters]);
 
-    fetchProducts();
-  }, [page, brand, category, minPrice, maxPrice]);
-
-  const handlePageChange = (newPage) => {
-    setSearchParams({ page: newPage });
+  const handleFilterChange = (newFilters) => {
+    setCurrentPage(1); // Reset to first page when filters change
+    setFilters(newFilters); // Update filters
   };
 
-  const handleFilterChange = () => {
-    setSearchParams({ page: 1 }); // Reset to first page when filters change
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
   };
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>{error}</div>;
-  }
-
-  const totalPages = Math.ceil(totalProducts / limit);
 
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Product List</h1>
-      
-      <div className="mb-4">
-        <h2 className="text-xl font-semibold mb-2">Filters</h2>
-        
-        <div className="mb-2">
-          <label className="mr-2">Brand:</label>
-          <input
-            type="text"
-            value={brand}
-            onChange={(e) => setBrand(e.target.value)}
-            className="border p-1 rounded"
-          />
-        </div>
-        
-        <div className="mb-2">
-          <label className="mr-2">Category:</label>
-          <input
-            type="text"
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            className="border p-1 rounded"
-          />
-        </div>
-
-        <div className="mb-2">
-          <label className="mr-2">Min Price:</label>
-          <input
-            type="number"
-            value={minPrice}
-            onChange={(e) => setMinPrice(e.target.value)}
-            className="border p-1 rounded"
-          />
-        </div>
-
-        <div className="mb-2">
-          <label className="mr-2">Max Price:</label>
-          <input
-            type="number"
-            value={maxPrice}
-            onChange={(e) => setMaxPrice(e.target.value)}
-            className="border p-1 rounded"
-          />
-        </div>
-
-        <button
-          onClick={handleFilterChange}
-          className="btn btn-primary"
-        >
-          Apply Filters
-        </button>
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {products.map((product) => (
+      <CategoryFilter onFilterChange={handleFilterChange} />
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
+        {filteredProducts.map((product) => (
           <div key={product.id} className="border rounded-lg p-4 shadow-md">
             <img
               src={product.imageUrl}
@@ -130,24 +56,11 @@ const HomePage = () => {
           </div>
         ))}
       </div>
-
-      <div className="flex justify-center mt-4">
-        <button
-          onClick={() => handlePageChange(page - 1)}
-          disabled={page <= 1}
-          className="btn btn-primary mr-2"
-        >
-          Previous
-        </button>
-        <span className="btn btn-disabled">{page}</span>
-        <button
-          onClick={() => handlePageChange(page + 1)}
-          disabled={page >= totalPages}
-          className="btn btn-primary ml-2"
-        >
-          Next
-        </button>
-      </div>
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
     </div>
   );
 };

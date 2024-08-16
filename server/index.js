@@ -54,41 +54,44 @@ async function run() {
 
     // get all products
     app.get('/products', async (req, res) => {
-        try {
-          const limit = parseInt(req.query.limit) || 10;
-          const offset = parseInt(req.query.offset) || 0;
-          const brand = req.query.brand;
-  const category = req.query.category;
-  const minPrice = parseFloat(req.query.minPrice) || 0;
-  const maxPrice = parseFloat(req.query.maxPrice) || Infinity;
-  let query = {};
-
-  if (brand) {
-    query.brand = brand;
-  }
-
-  if (category) {
-    query.category = category;
-  }
-
-  query.price = { $gte: minPrice, $lte: maxPrice };
-
-          
-          const totalProducts = await productsCollection.countDocuments();
-          const products = await productsCollection.find()
-            .skip(offset)
-            .limit(limit)
-            .toArray();
-      
-          res.send({
-            totalProducts,
-            products,
-          });
-        } catch (err) {
-          console.error(err);
-          res.status(500).send({ message: 'Error fetching products' });
-        }
-      });
+      const limit = parseInt(req.query.limit) || 10;
+      const page = parseInt(req.query.page) || 1;
+      const skip = (page - 1) * limit;
+    
+      const query = {};
+    
+      if (req.query.category) {
+        query.category = req.query.category;
+      }
+    
+      if (req.query.brand) {
+        query.brand = req.query.brand;
+      }
+    
+      if (req.query.minPrice && req.query.maxPrice) {
+        query.price = {
+          $gte: parseFloat(req.query.minPrice),
+          $lte: parseFloat(req.query.maxPrice),
+        };
+      }
+    
+      try {
+        const products = await productsCollection.find(query).skip(skip).limit(limit).toArray();
+        const totalProducts = await productsCollection.countDocuments(query);
+        const totalPages = Math.ceil(totalProducts / limit);
+    
+        res.send({
+          products,
+          totalPages,
+        });
+      } catch (err) {
+        console.error(err);
+        res.status(500).send({ message: 'Error fetching products' });
+      }
+    });
+    
+    
+    
       
    
 
