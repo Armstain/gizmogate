@@ -17,8 +17,7 @@ const router = createBrowserRouter(
         {
          index: true,
           element: <HomePage></HomePage>,
-          loader: () => fetch(`${import.meta.env.VITE_API_URL}/products`, )
-          ,
+          
         }
       ],
     },

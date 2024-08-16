@@ -54,10 +54,42 @@ async function run() {
 
     // get all products
     app.get('/products', async (req, res) => {
-        const result = await productsCollection.find({}).toArray();
-        res.send(result)
+        try {
+          const limit = parseInt(req.query.limit) || 10;
+          const offset = parseInt(req.query.offset) || 0;
+          const brand = req.query.brand;
+  const category = req.query.category;
+  const minPrice = parseFloat(req.query.minPrice) || 0;
+  const maxPrice = parseFloat(req.query.maxPrice) || Infinity;
+  let query = {};
 
-    })
+  if (brand) {
+    query.brand = brand;
+  }
+
+  if (category) {
+    query.category = category;
+  }
+
+  query.price = { $gte: minPrice, $lte: maxPrice };
+
+          
+          const totalProducts = await productsCollection.countDocuments();
+          const products = await productsCollection.find()
+            .skip(offset)
+            .limit(limit)
+            .toArray();
+      
+          res.send({
+            totalProducts,
+            products,
+          });
+        } catch (err) {
+          console.error(err);
+          res.status(500).send({ message: 'Error fetching products' });
+        }
+      });
+      
    
 
     // Send a ping to confirm a successful connection
