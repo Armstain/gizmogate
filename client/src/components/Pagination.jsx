@@ -7,7 +7,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   }
 
   return (
-    <div className="flex justify-center space-x-2 mt-4">
+    <div className="flex justify-center space-x-2 mt-4 flex-wrap">
       <button
         className="px-4 py-2 bg-gray-300 rounded"
         onClick={() => onPageChange(currentPage - 1)}
@@ -38,3 +38,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
 };
 
 export default Pagination;
+
+<div className="flex justify-center space-x-2 mt-4 flex-wrap">
+  ...
+</div>

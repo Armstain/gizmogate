@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import  { useEffect, useState } from 'react';
 import axios from 'axios';
 
 const CategoryFilter = ({ onFilterChange }) => {
@@ -13,7 +13,7 @@ const CategoryFilter = ({ onFilterChange }) => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/products', {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/products`, {
           params: {
             category: selectedCategory,
             brand: selectedBrand,
@@ -24,7 +24,6 @@ const CategoryFilter = ({ onFilterChange }) => {
         const fetchedProducts = response.data.products;
         setProducts(fetchedProducts);
 
-        // Extract unique categories and brands from the fetched products
         const uniqueCategories = [...new Set(fetchedProducts.map(product => product.category))];
         const uniqueBrands = [...new Set(fetchedProducts.map(product => product.brand))];
 
@@ -56,7 +55,7 @@ const CategoryFilter = ({ onFilterChange }) => {
     <div className="bg-gray-100 p-4 rounded-lg shadow-md">
   <h2 className="text-xl font-semibold mb-4">Filter Products</h2>
 
-  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
     {/* Category Filter */}
     <div className="flex flex-col">
       <label className="font-medium mb-2">Category:</label>
@@ -92,7 +91,8 @@ const CategoryFilter = ({ onFilterChange }) => {
     </div>
 
     {/* Min Price Filter */}
-    <div className="flex flex-col">
+ 
+ <div className="flex flex-col">
       <label className="font-medium mb-2">Min Price:</label>
       <input
         type="number"
@@ -114,8 +114,9 @@ const CategoryFilter = ({ onFilterChange }) => {
         placeholder="0"
       />
     </div>
+ </div>
   </div>
-</div>
+
 
   );
 };

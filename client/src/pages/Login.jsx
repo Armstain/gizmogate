@@ -5,22 +5,37 @@ import { AuthContext } from '../provider/AuthProvider'
 
 const Login = () => {
 
-    const {signIn} = useContext(AuthContext)
-    const navigate = useNavigate()
-    const handleLogin = (e) => {
-      e.preventDefault()
-      const form = e.target
-      const email = form.email.value
-      const password = form.password.value
-      signIn(email, password)
-      .then ((result) => {
-          const user = result.user
-          console.log(user)
-          navigate('/')
+  const {signIn, signInWithGoogle} = useContext(AuthContext)
+  const navigate = useNavigate()
+
+  const handleLogin = (e) => {
+    e.preventDefault()
+    const form = e.target
+    const email = form.email.value
+    const password = form.password.value
+    signIn(email, password)
+    .then((result) => {
+      const user = result.user
+      console.log(user)
+      navigate('/')
+    })
+    .catch((error) => {
+      console.error(error)
+    })
+  }
+
+  const handleGoogleSignIn = () => {
+    signInWithGoogle()
+      .then((result) => {
+        const user = result.user
+        console.log(user)
+        navigate('/')
       })
-      
-      console.log(email, password)
-    }
+      .catch((error) => {
+        console.error(error)
+      })
+  }
+
   return (
     <div className='flex justify-center items-center min-h-screen'>
       <div className='flex flex-col max-w-md p-6 rounded-md sm:p-10 bg-gray-100 text-gray-900'>
@@ -31,7 +46,7 @@ const Login = () => {
           </p>
         </div>
         <form
-        onSubmit={handleLogin}
+          onSubmit={handleLogin}
           noValidate=''
           action=''
           className='space-y-6 ng-untouched ng-pristine ng-valid'
@@ -90,7 +105,10 @@ const Login = () => {
           </p>
           <div className='flex-1 h-px sm:w-16 dark:bg-gray-700'></div>
         </div>
-        <div className='flex justify-center items-center space-x-2 border m-3 p-2 border-gray-300 border-rounded cursor-pointer'>
+        <div 
+          className='flex justify-center items-center space-x-2 border m-3 p-2 border-gray-300 border-rounded cursor-pointer'
+          onClick={handleGoogleSignIn}
+        >
           <FcGoogle size={32} />
 
           <p>Continue with Google</p>

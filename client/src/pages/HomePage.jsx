@@ -9,7 +9,7 @@ const HomePage = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [filters, setFilters] = useState({});
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortBy, setSortBy] = useState("date_added"); // Default sort by date added
+  const [sortBy, setSortBy] = useState("date_added"); 
 
   const fetchProducts = async (filters = {}) => {
     try {
@@ -38,8 +38,8 @@ const HomePage = () => {
   }, [currentPage, filters, searchTerm, sortBy]);
 
   const handleFilterChange = (newFilters) => {
-    setCurrentPage(1); // Reset to first page when filters change
-    setFilters(newFilters); // Update filters
+    setCurrentPage(1); 
+    setFilters(newFilters); 
   };
 
   const handlePageChange = (page) => {
@@ -48,19 +48,19 @@ const HomePage = () => {
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
-    setCurrentPage(1); // Reset to first page when search term changes
+    setCurrentPage(1); 
   };
 
   const handleSortChange = (e) => {
     setSortBy(e.target.value);
-    setCurrentPage(1); // Reset to first page when sorting option changes
+    setCurrentPage(1); 
   };
 
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Product List</h1>
       <CategoryFilter onFilterChange={handleFilterChange} />
-      <div className="my-4 flex items-center justify-center space-x-4 ">
+      <div className="my-4 flex flex-col md:flex-row items-center justify-center space-x-4 ">
         <input
           type="text"
           value={searchTerm}

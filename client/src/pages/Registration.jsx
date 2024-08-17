@@ -1,23 +1,39 @@
-import { Link, useNavigate } from 'react-router-dom'
-import { FcGoogle } from 'react-icons/fc'
-import { useForm } from 'react-hook-form'
+import { Link, useNavigate } from 'react-router-dom';
+import { FcGoogle } from 'react-icons/fc';
+import { useForm } from 'react-hook-form';
 import { useContext } from 'react';
 import { AuthContext } from '../provider/AuthProvider';
 
 const Registration = () => {
+  const { register, handleSubmit, formState: { errors } } = useForm();
+  const navigate = useNavigate();
+  const { createUser, signInWithGoogle } = useContext(AuthContext);
 
-  const { register, handleSubmit, watch, formState: { errors } } = useForm();
-  const navigate = useNavigate()
-  const {createUser} = useContext(AuthContext)
- const onSubmit = (data) => {
+  const onSubmit = (data) => {
     createUser(data.email, data.password)
-    .then ((result) => {
-        const user = result.user
-        console.log(user)
-        navigate('/')
-    })
-    console.log(data)
- }
+      .then((result) => {
+        const user = result.user;
+        console.log(user);
+        navigate('/');
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+    console.log(data);
+  };
+
+  const handleGoogleSignIn = () => {
+    signInWithGoogle()
+      .then((result) => {
+        const user = result.user;
+        console.log(user);
+        navigate('/');
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
   return (
     <div className='flex justify-center items-center min-h-screen'>
       <div className='flex flex-col max-w-md p-6 rounded-md sm:p-10 bg-gray-100 text-gray-900'>
@@ -26,25 +42,23 @@ const Registration = () => {
           <p className='text-sm text-gray-400'>Welcome to StayVista</p>
         </div>
         <form 
-        onSubmit={handleSubmit(onSubmit)}
+          onSubmit={handleSubmit(onSubmit)}
           noValidate=''
-          action=''
           className='space-y-6 ng-untouched ng-pristine ng-valid'
         >
           <div className='space-y-4'>
             <div>
-              <label htmlFor='email' className='block mb-2 text-sm'>
+              <label htmlFor='name' className='block mb-2 text-sm'>
                 Name
               </label>
               <input
-              {...register("name", { required: true })}
+                {...register("name", { required: true })}
                 type='text'
-                name='name'
                 id='name'
                 placeholder='Enter Your Name Here'
                 className='w-full px-3 py-2 border rounded-md border-gray-300 focus:outline-rose-500 bg-gray-200 text-gray-900'
-                data-temp-mail-org='0'
               />
+              {errors.name && <p className="text-red-500 text-sm">Name is required.</p>}
             </div>
             
             <div>
@@ -52,32 +66,27 @@ const Registration = () => {
                 Email address
               </label>
               <input
-              {...register("email", { required: true })}
+                {...register("email", { required: true })}
                 type='email'
-                name='email'
                 id='email'
-                required
                 placeholder='Enter Your Email Here'
                 className='w-full px-3 py-2 border rounded-md border-gray-300 focus:outline-rose-500 bg-gray-200 text-gray-900'
-                data-temp-mail-org='0'
               />
+              {errors.email && <p className="text-red-500 text-sm">Email is required.</p>}
             </div>
+
             <div>
-              <div className='flex justify-between'>
-                <label htmlFor='password' className='text-sm mb-2'>
-                  Password
-                </label>
-              </div>
+              <label htmlFor='password' className='text-sm mb-2'>
+                Password
+              </label>
               <input
-              {...register("password", { required: true })}
+                {...register("password", { required: true })}
                 type='password'
-                name='password'
-                autoComplete='new-password'
                 id='password'
-                required
                 placeholder='*******'
                 className='w-full px-3 py-2 border rounded-md border-gray-300 focus:outline-rose-500 bg-gray-200 text-gray-900'
               />
+              {errors.password && <p className="text-red-500 text-sm">Password is required.</p>}
             </div>
           </div>
 
@@ -90,6 +99,7 @@ const Registration = () => {
             </button>
           </div>
         </form>
+
         <div className='flex items-center pt-4 space-x-1'>
           <div className='flex-1 h-px sm:w-16 dark:bg-gray-700'></div>
           <p className='px-3 text-sm dark:text-gray-400'>
@@ -97,11 +107,15 @@ const Registration = () => {
           </p>
           <div className='flex-1 h-px sm:w-16 dark:bg-gray-700'></div>
         </div>
-        <div className='flex justify-center items-center space-x-2 border m-3 p-2 border-gray-300 border-rounded cursor-pointer'>
-          <FcGoogle size={32} />
 
+        <div 
+          onClick={handleGoogleSignIn} 
+          className='flex justify-center items-center space-x-2 border m-3 p-2 border-gray-300 rounded cursor-pointer'
+        >
+          <FcGoogle size={32} />
           <p>Continue with Google</p>
         </div>
+
         <p className='px-6 text-sm text-center text-gray-400'>
           Already have an account?{' '}
           <Link
@@ -114,7 +128,7 @@ const Registration = () => {
         </p>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Registration
+export default Registration;
