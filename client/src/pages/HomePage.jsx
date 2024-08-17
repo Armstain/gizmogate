@@ -78,36 +78,38 @@ const HomePage = () => {
           <option value="price_desc">Sort by Price (High to Low)</option>
         </select>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 mt-4">
-        {filteredProducts.map((product) => (
-          <div key={product.id} className="card bg-base-100 w-96 shadow-xl">
-            <figure>
-              <img
-                src={product.imageUrl}
-                alt={product.name}
-                className="w-full h-48 object-cover"
-              />
-            </figure>
-            <div className="card-body">
-              <h2 className="card-title">{product.name}</h2>
-              <p className="text-gray-700 mb-2">{product.description}</p>
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-gray-500">{product.brand}</span>
-                <span className="text-yellow-500">
-                  {"⭐".repeat(product.rating)}
-                </span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-700">${product.price}</span>
-                <span className="text-gray-500 text-sm">
-                  {new Date(product.dateAdded).toLocaleDateString()}
-                </span>
-              </div>
-              <div className="card-actions justify-end"></div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-8">
+      {filteredProducts.map((product) => (
+        <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-105">
+          <div className="relative">
+            <img
+              src={product.imageUrl}
+              alt={product.name}
+              className="w-full h-56 object-cover"
+            />
+            <span className="absolute top-2 right-2 bg-white text-sm font-semibold px-2 py-1 rounded-full">
+              {product.category}
+            </span>
+          </div>
+          <div className="p-4">
+            <h2 className="text-xl font-bold mb-2 text-gray-800">{product.name}</h2>
+            <p className="text-gray-600 text-sm mb-4 line-clamp-2">{product.description}</p>
+            <div className="flex justify-between items-center mb-4">
+              <span className="text-gray-700 font-semibold">{product.brand}</span>
+              <span className="text-yellow-500 font-bold">
+                {"★".repeat(product.rating)}
+              </span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-2xl font-bold text-indigo-600">${product.price}</span>
+              <span className="text-gray-500 text-xs">
+                Added {new Date(product.dateAdded).toLocaleDateString()}
+              </span>
             </div>
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
+    </div>
 
       <Pagination
         currentPage={currentPage}

@@ -44,7 +44,7 @@ const AuthProvider = ({ children }) => {
 
   const logOut = async () => {
     setLoading(true)
-    await axios.get(`${import.meta.env.VITE_API_URL}/logout`, {
+    await axios.get(`${import.meta.env.VITE_URL}/logout`, {
       withCredentials: true,
     })
     return signOut(auth)
@@ -56,15 +56,7 @@ const AuthProvider = ({ children }) => {
       photoURL: photo,
     })
   }
-  // Get token from server
-//   const getToken = async email => {
-//     const { data } = await axios.post(
-//       `${import.meta.env.VITE_API_URL}/jwt`,
-//       { email },
-//       { withCredentials: true }
-//     )
-//     return data
-//   }
+
 
   // onAuthStateChange
   useEffect(() => {
