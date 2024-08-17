@@ -4,7 +4,6 @@ This is the backend for the Website, a RESTful API built with Node.js, Express.j
 
 ## Features
 
-- **User Authentication:** Secure user authentication using JWT.
 - **Product Management:** Add, update, delete, and retrieve electronic products.
 - **Filtering:** Filter products by categories, brands, and price ranges.
 - **Pagination:** Support for paginated product lists.
